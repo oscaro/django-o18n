@@ -106,6 +106,19 @@ class TestRequests(TestCase):
             "Main language 'en' needs not be in other languages "
             "for country 'us'.")
 
+    def test_non_o18n_urls(self):
+        request = self.get_data_for_url('/xx/')
+        self.assertEqual(request.COUNTRY, None)
+        self.assertEqual(request.LANGUAGE, None)
+        self.assertEqual(request.LANGUAGE_CODE, 'en')
+        self.assertEqual(request.path_info, '/xx/')
+
+        request = self.get_data_for_url('/yy/zz/')
+        self.assertEqual(request.COUNTRY, None)
+        self.assertEqual(request.LANGUAGE, None)
+        self.assertEqual(request.LANGUAGE_CODE, 'en')
+        self.assertEqual(request.path_info, '/yy/zz/')
+
 
 class TestReverse(TestCase):
 
