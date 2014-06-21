@@ -87,6 +87,10 @@ class TestRequests(TestCase):
     def test_us_en_subpath(self):
         self.assertEqual(404, self.client.get('/us/en/subpath/').status_code)
 
+    @override_settings(COUNTRIES=[('us', 'en', [])])
+    def test_unsupported_country(self):
+        self.assertEqual(404, self.client.get('/mx/').status_code)
+
     @override_settings(LANGUAGES=[('en', "English")])
     def test_unsupported_language(self):
         with self.assertRaises(ImproperlyConfigured):
