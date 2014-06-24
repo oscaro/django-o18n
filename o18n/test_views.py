@@ -1,6 +1,6 @@
 import json
 
-# JsonResponse is available in Djnago 1.7+
+# JsonResponse is available in Django 1.7+
 from django.http import HttpResponse
 
 
