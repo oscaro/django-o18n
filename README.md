@@ -111,6 +111,33 @@ The currenty implementation assumes but does not check that `APPEND_SLASH` and
 There are no `{% get_current_coutry %}` and `{% get_country_info %}` template
 tags at this time, but they could be implemented if there's a use case.
 
+FAQ
+---
+
+### Why does the root URL return a 404 Not Found error?
+
+Since o18n doesn't attempt to guess the user's country, it cannot handle the
+root URL (`/`). It's up to you to implement the logic you need in a Django
+view and add it to your root URLconf outside of o18n_patterns:
+
+    from django.conf.urls import patterns, url
+    from o18n.urls import o18n_patterns
+    from myproject.views import root
+
+    urlpatterns = patterns('',
+        url(r'^$', root, name='root'),
+    ) + o18n_patterns('',
+        # ...
+    )
+
+For instance, you can guess the user's country with [GeoIP][] and offer a link
+to the corresponding site or the option to choose another one. Note that it's
+hard to determine reliably a user's country over the Internet. If you want to
+redirect the user automatically, you should provide the option to select
+another country in case you guessed wrong.
+
+[GeoIP]: https://docs.djangoproject.com/en/stable/ref/contrib/gis/geoip/
+
 Hacking
 -------
 
