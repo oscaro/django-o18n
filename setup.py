@@ -1,5 +1,6 @@
 from setuptools import setup
 import os
+import re
 
 # Avoid polluting the .tar.gz with ._* files under Mac OS X
 os.putenv('COPYFILE_DISABLE', 'true')
@@ -9,6 +10,10 @@ README = os.path.join(os.path.dirname(__file__), 'README')
 if not os.path.exists(README):
     os.symlink(README + '.md', README)
 
+VERSION = os.path.join(os.path.dirname(__file__), 'o18n', '__init__.py')
+with open(VERSION) as f:
+    version = re.match("^__version__ = '(.*)'$", f.read()).group(1)
+
 description = "/<country>/<language>/ URL scheme, like Django's i18n_patterns."
 
 with open(README) as f:
@@ -16,7 +21,7 @@ with open(README) as f:
 
 setup(
     name='django-o18n',
-    version='1.0',
+    version=version,
 
     description=description,
     long_description=long_description,
