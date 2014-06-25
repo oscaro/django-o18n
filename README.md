@@ -53,6 +53,14 @@ Each entry is a 3-uple containing:
 * The two-letter language code of the main language, if there is one,
 * A list of two-letter language codes of other languages, possibly empty.
 
+With the example above, o18n_patterns matches the following URL prefixes:
+
+* `us/`: country = USA, language = English
+* `us/es/`: country = USA, language = Spanish
+* `ca/en/`: country = Canada, language = English
+* `ca/fr/`: country = Canada, language = French
+* `mx/`: country = Mexico, language = Spanish
+
 (If `COUNTRIES` clashes with another setting, set `O18N_COUNTRIES` instead.)
 
 Add `'o18n.middleware.CountryLanguageMiddleware'` to `MIDDLEWARE_CLASSES`
