@@ -26,7 +26,7 @@ setup(
     description=description,
     long_description=long_description,
 
-    url='https://github.com/oscaro/o18n',
+    url='https://github.com/oscaro/django-o18n',
 
     author='Aymeric Augustin',
     author_email='aymeric.augustin@oscaro.com',

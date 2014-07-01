@@ -1,5 +1,5 @@
-o18n
-====
+django-o18n
+===========
 
 Use case
 --------
@@ -36,7 +36,7 @@ country is active, reversing an URL raises an exception.
 Setup
 -----
 
-o18n is designed for Django ≥ 1.6 and Python ≥ 3.2. (Python 2.7 may work too.)
+django-o18n is designed for Django ≥ 1.6 and Python ≥ 3.2 or 2.7.
 
 It relies on a list of supported countries and languages declared in the
 `COUNTRIES` setting. For example:
@@ -116,9 +116,9 @@ FAQ
 
 ### Why does the root URL return a 404 Not Found error?
 
-Since o18n doesn't attempt to guess the user's country, it cannot handle the
-root URL (`/`). It's up to you to implement the logic you need in a Django
-view and add it to your root URLconf outside of o18n_patterns:
+Since django-o18n doesn't attempt to guess the user's country, it cannot
+handle the root URL (`/`). It's up to you to implement the logic you need
+in a Django view and add it to your root URLconf outside of o18n_patterns:
 
     from django.conf.urls import patterns, url
     from o18n.urls import o18n_patterns
@@ -156,4 +156,4 @@ If you want to suggest changes, please submit a pull request!
 License
 -------
 
-o18n is released under the BSD license, like Django itself.
+django-o18n is released under the BSD license, like Django itself.
