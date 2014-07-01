@@ -27,7 +27,7 @@ def get_countries_setting():
         return settings.COUNTRIES
 
 
-def _get_variant(country, language):
+def _variant(country, language):
     language_code = '{}-{}'.format(language, country)
     try:
         return get_supported_language_variant(language_code)
@@ -49,13 +49,13 @@ def get_language_maps():
         for country, main_language, other_languages in get_countries_setting():
             inner = {}
             if main_language is not None:
-                inner[None] = main_language, _get_variant(country, main_language)
+                inner[None] = main_language, _variant(country, main_language)
             for language in other_languages:
                 if language == main_language:
                     warnings.warn(
                         "Main language '{}' needs not be in other languages "
                         "for country '{}'.".format(main_language, country))
-                inner[language] = language, _get_variant(country, language)
+                inner[language] = language, _variant(country, language)
             outer[country] = inner
         _language_maps = outer
     return _language_maps
