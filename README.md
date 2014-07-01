@@ -98,7 +98,7 @@ They behave like their equivalents for manipulating the current language in
 `get_country()` returns `None`. If a project is bothering with per-country
 logic, that may be related to local regulations, making it a bad choice to
 fall back silently to a default country. This argument is weaker for languages
-because outputting text in the wrong language is usually better than crashing
+because outputting text in the wrong language is usually better than crashing.
 
 Limitations
 -----------
@@ -137,6 +137,35 @@ redirect the user automatically, you should provide the option to select
 another country in case you guessed wrong.
 
 [GeoIP]: https://docs.djangoproject.com/en/stable/ref/contrib/gis/geoip/
+
+### Why do my tests fail with a `NoReverseMatch` exception?
+
+Since django-o18n doesn't have a default country, it cannot reverse o18n
+patterns when no country is active. This doesn't play nice with the pattern of
+reversing an URL and then making a request to this URL with the test client.
+In contrast, it isn't an issue in regular code because a country is usually
+activated by `CountryLanguageMiddleware` before the request reaches the view.
+
+If you want to activate a default country and language in your tests, you can
+implement a mixin and add it to your test cases:
+
+
+    from django.utils import translation
+    from o18n import country
+
+    class O18nMixin(object):
+        country_code = 'us'
+        language_code = 'en'
+
+        def setUp(self):
+            country.activate(self.country_code)
+            translation.activate(self.language_code)
+            super(O18nMixin, self).setUp()
+
+        def tearDown(self):
+            super(O18nMixin, self).tearDown()
+            translation.deactivate()
+            country.deactivate()
 
 Hacking
 -------
