@@ -1,6 +1,10 @@
 django-o18n
 ===========
 
+**Unmaintained!** This software is no longer actively used by Oscaro. The code
+is very simple and will keep working in the foreseeable future. Both offers to
+take over maintenance and pull requests are welcome.
+
 Use case
 --------
 
