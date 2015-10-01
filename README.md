@@ -171,6 +171,48 @@ implement a mixin and add it to your test cases:
             translation.deactivate()
             country.deactivate()
 
+Alternatively, this can also be implemented as a context manager (to be used with the `with` statement):
+
+    from django.utils import translation
+    from o18n import country
+    
+    
+    class O18nContextManager(object):
+        """
+        Context manager used for using different language/country code combos
+        when testing localised urls.
+    
+        Usage:
+        >>> with O18nContextManager(language='en', country='uk'):
+        >>>     # reverse a URL whilst under UK locale
+        >>>     reverse('some_app')
+        '/uk/some_app'
+        >>> with O18nContextManager(language='en', country='au'):
+        >>>     # reverse a URL whilst under AUS locale
+        >>>     reverse('some_app')
+        '/au/some_app'
+        """
+        def __init__(self, language, country):
+            """
+            Store constructor arguments.
+            """
+            self.language = language
+            self.country = country
+    
+        def __enter__(self):
+            """
+            Activate language and country.
+            """
+            translation.activate(self.language)
+            country.activate(self.country)
+    
+        def __exit__(self, type, value, traceback):
+            """
+            Deactivate language and country.
+            """
+            country.deactivate()
+            translation.deactivate()
+
 Hacking
 -------
 
