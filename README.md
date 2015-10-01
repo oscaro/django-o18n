@@ -45,11 +45,13 @@ django-o18n is designed for Django ≥ 1.6 and Python ≥ 3.2 or 2.7.
 It relies on a list of supported countries and languages declared in the
 `COUNTRIES` setting. For example:
 
-    COUNTRIES = [
-        ('us', 'en', ['es']),
-        ('ca', None, ['en', 'fr']),
-        ('mx', 'es', []),
-    ]
+```py
+COUNTRIES = [
+    ('us', 'en', ['es']),
+    ('ca', None, ['en', 'fr']),
+    ('mx', 'es', []),
+]
+```
 
 Each entry is a 3-uple containing:
 
@@ -124,15 +126,17 @@ Since django-o18n doesn't attempt to guess the user's country, it cannot
 handle the root URL (`/`). It's up to you to implement the logic you need
 in a Django view and add it to your root URLconf outside of o18n_patterns:
 
-    from django.conf.urls import patterns, url
-    from o18n.urls import o18n_patterns
-    from myproject.views import root
+```py
+from django.conf.urls import patterns, url
+from o18n.urls import o18n_patterns
+from myproject.views import root
 
-    urlpatterns = patterns('',
-        url(r'^$', root, name='root'),
-    ) + o18n_patterns('',
-        # ...
-    )
+urlpatterns = patterns('',
+    url(r'^$', root, name='root'),
+) + o18n_patterns('',
+    # ...
+)
+```
 
 For instance, you can guess the user's country with [GeoIP][] and offer a link
 to the corresponding site or the option to choose another one. Note that it's
@@ -153,23 +157,68 @@ activated by `CountryLanguageMiddleware` before the request reaches the view.
 If you want to activate a default country and language in your tests, you can
 implement a mixin and add it to your test cases:
 
+```py
+from django.utils import translation
+from o18n import country
 
-    from django.utils import translation
-    from o18n import country
+class O18nMixin(object):
+    country_code = 'us'
+    language_code = 'en'
 
-    class O18nMixin(object):
-        country_code = 'us'
-        language_code = 'en'
+    def setUp(self):
+        country.activate(self.country_code)
+        translation.activate(self.language_code)
+        super(O18nMixin, self).setUp()
 
-        def setUp(self):
-            country.activate(self.country_code)
-            translation.activate(self.language_code)
-            super(O18nMixin, self).setUp()
+    def tearDown(self):
+        super(O18nMixin, self).tearDown()
+        translation.deactivate()
+        country.deactivate()
+```
 
-        def tearDown(self):
-            super(O18nMixin, self).tearDown()
-            translation.deactivate()
-            country.deactivate()
+Alternatively, this can also be implemented as a context manager (to be used with the `with` statement):
+
+```py
+from django.utils import translation
+from o18n import country
+
+
+class O18nContextManager(object):
+    """
+    Context manager used for using different language/country code combos
+    when testing localised urls.
+
+    Usage:
+    >>> with O18nContextManager(language='en', country='uk'):
+    >>>     # reverse a URL whilst under UK locale
+    >>>     reverse('some_app')
+    '/uk/some_app'
+    >>> with O18nContextManager(language='en', country='au'):
+    >>>     # reverse a URL whilst under AUS locale
+    >>>     reverse('some_app')
+    '/au/some_app'
+    """
+    def __init__(self, language, country):
+        """
+        Store constructor arguments.
+        """
+        self.language = language
+        self.country = country
+
+    def __enter__(self):
+        """
+        Activate language and country.
+        """
+        translation.activate(self.language)
+        country.activate(self.country)
+
+    def __exit__(self, type, value, traceback):
+        """
+        Deactivate language and country.
+        """
+        country.deactivate()
+        translation.deactivate()
+```
 
 Hacking
 -------
